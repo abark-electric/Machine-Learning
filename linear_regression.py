@@ -11,46 +11,47 @@ import pickle
 from matplotlib import style
 
 
-df = pd.read_csv(r"student-mat.csv", sep=";")
-data = df[["G1", "G2", "G3", "studytime", "failures", "absences"]]    # Needed data
+class Regression:
+    def __init__(self, filename, feature_array, label):
+        self.data = pd.read_csv(filename)[feature_array]
+        self.predict = label
+        self.X = np.array(self.data.drop([self.predict], 1))    # Features
+        self.y = np.array(self.data[self.predict])  # Label array
 
-predict = "G3"
+    def separate_dataset(self):
+        X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(self.X, self.y, test_size=0.1)
+        return X_train, X_test, y_train, y_test
 
-X = np.array(data.drop([predict], 1))    # Features
-y = np.array(data[predict])    # Label array
+    @staticmethod
+    def create_and_train_model(X_train, X_test, y_train, y_test):
+        linear = linear_model.LinearRegression()  # Loads LR model
+        linear.fit(X_train, y_train)  # Finds the best fit line
+        accuracy = linear.score(X_test, y_test)
+        return accuracy, linear
 
-# Separating data sets for training and testing
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y, test_size=0.1)
+    @staticmethod
+    def export_model(pickle_filename, model):
+        with open(pickle_filename, "wb") as f:
+            pickle.dump(model, f)
 
-# Creating and training the model
-# linear = linear_model.LinearRegression()    # Loads LR model
-# linear.fit(X_train, y_train)    # Finds the best fit line
-#
-# accuracy = linear.score(X_test, y_test)
+    @staticmethod
+    def load_model(pickle_filename):
+        pickle_in = open(pickle_filename, "rb")  # Open stored pickle
+        model = pickle.load(pickle_in)
+        return model
 
-# print(accuracy)
-# print(linear.coef_)    # Gradient for each feature- 5-dimensional
-# print(linear.intercept_)
-pickle_in = open(r"studentmodel.pickle", "rb")    # Open stored pickle
-linear = pickle.load(pickle_in)
+    @staticmethod
+    def make_predictions(test_data, model, X_test, y_test):
+        predictions = model.predict(test_data)  # Make predictions
 
-print(pickle_in)
-print(linear)
-
-predictions = linear.predict(X_test)    # Make predictions
-
-for x in range(len(predictions)):
-    print(f"Predicted Grade:{predictions[x]}, Test Data: {X_test[x]}, Actual Grade: {y_test[x]}")
-
-# Store model
-# with open(r"studentmodel.pickle", "wb") as f:
-#     pickle.dump(linear, f)
+        for x in range(len(predictions)):
+            print(f"Predicted Grade:{predictions[x]}, Test Data: {X_test[x]}, Actual Grade: {y_test[x]}")
 
 
-# Plotting
-p = "G1"
-style.use("ggplot")
-plt.scatter(data[p], data["G3"])
-plt.xlabel(p)
-plt.ylabel("Final Grade")
-plt.show()
+    def plot_data(self, feature, label):
+        p = "G1"
+        style.use("ggplot")
+        plt.scatter(self.data[feature], self.data[label])
+        plt.xlabel(feature)
+        plt.ylabel(label)
+        plt.show()
