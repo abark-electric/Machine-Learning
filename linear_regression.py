@@ -15,5 +15,15 @@ predict = "G3"
 X = np.array(data.drop([predict], 1))    # Features
 y = np.array(data[predict])    # Label array
 
-X_train, y_train, X_test, y_test = sklearn.model_selection.train_test_split(X, y, test_size=0.1)
+# Separating data sets for training and testing
+X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y, test_size=0.1)
+
+# Creating the model
+linear = linear_model.LinearRegression()    # Loads LR model
+linear.fit(X_train, y_train)    # Finds the best fit line
+
+accuracy = linear.score(X_test, y_test)
+
+print(accuracy)
+
 
