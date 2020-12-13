@@ -1,4 +1,4 @@
-# Linear Regression
+# Linear Regression (supervised)
 
 import pandas as pd
 import numpy as np
@@ -45,3 +45,12 @@ for x in range(len(predictions)):
 # Store model
 # with open(r"studentmodel.pickle", "wb") as f:
 #     pickle.dump(linear, f)
+
+
+# Plotting
+p = "G1"
+style.use("ggplot")
+plt.scatter(data[p], data["G3"])
+plt.xlabel(p)
+plt.ylabel("Final Grade")
+plt.show()
