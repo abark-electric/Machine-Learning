@@ -24,6 +24,14 @@ linear.fit(X_train, y_train)    # Finds the best fit line
 
 accuracy = linear.score(X_test, y_test)
 
-print(accuracy)
+# print(accuracy)
+# print(linear.coef_)    # Gradient for each feature- 5-dimensional
+# print(linear.intercept_)
+
+predictions = linear.predict(X_test)    # Make predictions
+
+for x in range(len(predictions)):
+    print(f"Predicted Grade:{predictions[x]}, Test Data: {X_test[x]}, Actual Grade: {y_test[x]}")
+
 
 
